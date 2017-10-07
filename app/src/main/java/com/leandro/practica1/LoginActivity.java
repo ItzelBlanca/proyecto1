@@ -3,16 +3,32 @@ package com.leandro.practica1;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
+import android.widget.EditText;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 public class LoginActivity extends BaseActivity {
 
     private static final String TAG = LoginActivity.class.getName();
 
     private Toolbar toolbar;
+
+    @BindView(R.id.edt_email)
+    EditText email;
+    @BindView(R.id.text_email)
+    TextInputLayout textEmail;
+    @BindView(R.id.edt_password)
+    EditText password;
+    @BindView(R.id.text_password)
+    TextInputLayout textPassword ;
 
     @Override
     protected int getLayoutResID() {
@@ -32,45 +48,41 @@ public class LoginActivity extends BaseActivity {
         initConfigToolbar();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.e(TAG, "ONCREATE");
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.e(TAG, "OnStart");
-    }
+    @OnClick(R.id.btn_entrar)
+    public void onClickLogin(){
+        if(isValidLogin()){
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.e(TAG, "OnResume");
-    }
+        }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.e(TAG, "OnPause");
     }
+    private boolean isValidLogin(){
+        boolean valid = true;
+        textEmail.setError(null);
+        textPassword.setError(null);
+        textEmail.setErrorEnabled(false);
+        textPassword.setErrorEnabled(false);
+        if (email.getText().toString().isEmpty()){
+            valid = false ;
+            textEmail.setError(getString(R.string.Login_text_error_is_empty_email));
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.e(TAG, "OnStop");
+        }
+        if (password.getText().toString().isEmpty()){
+            valid = false ;
+            textPassword.setError(getString(R.string.Login_text_error_is_empty_password));
+
+        }
+        if (!isEmailValid(email.getText().toString())){
+            valid = false ;
+            textEmail.setError(getString(R.string.Login_text_error_is_valid_email));
+        }
+       return valid;
     }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.e(TAG, "OnRestart");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.e(TAG, "OnDestroy");
+    private boolean isEmailValid(CharSequence charSequence){
+        if(TextUtils.isEmpty(charSequence)){
+            return false;
+        }else{
+            return Patterns.EMAIL_ADDRESS.matcher(charSequence).matches();
+        }
     }
 }
